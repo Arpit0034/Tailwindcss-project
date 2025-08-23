@@ -4,8 +4,10 @@ WORKDIR /app
 
 COPY package*.json ./
 RUN npm install
+RUN npm install -g serve
 
 COPY . ./
 
 RUN npx tailwindcss -i ./style.css -o ./output.css --minify
 
+CMD ["serve", "-s", ".", "-l", "8000"]
