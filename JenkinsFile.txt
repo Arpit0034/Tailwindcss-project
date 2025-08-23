@@ -1,0 +1,38 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Code') {
+            steps {
+                git branch: 'main', url: 'https://github.com/Arpit0034/Tailwindcss-project.git'
+            }
+        }
+        stage('Build') {
+            steps {
+                sh 'docker build . -f DockerFile -t arpit01001/tailwind-project:latest'
+            }
+        }
+        stage('Push') {
+            steps {
+                withCredentials([usernamePassword(
+                    credentialsId: 'docker-hub-credential',
+                    usernameVariable: 'DOCKERHUB_USER',
+                    passwordVariable: 'DOCKERHUB_PASS'
+                )]) {
+                    sh 'echo "$DOCKERHUB_PASS" | docker login -u "$DOCKERHUB_USER" --password-stdin'
+                    sh 'docker push arpit01001/tailwind-project:latest'
+                }
+            }
+        }
+        stage('Test') {
+            steps {
+                echo 'Test'
+            }
+        }
+        stage('Deploy') {
+            steps {
+                sh 'docker-compose down && docker-compose up -d'
+            }
+        }
+    }
+}
