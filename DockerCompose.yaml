@@ -1,0 +1,6 @@
+version: ''
+services: 
+  web:
+    image: 'arpit01001/tailwind-project:latest'
+    ports:
+      - "8000:8000"
